@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>北海道地方創生深度考察互動指南</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #F9F7F2;
+            color: #3E362E;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 優化手機端滑動導覽列 */
+        .nav-scroll-container {
+            overflow-x: auto;
+            display: flex;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+        }
+        .nav-scroll-container::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            height: 300px;
+            max-height: 350px;
+        }
+
+        .nav-active {
+            color: #8B5E3C;
+            border-bottom: 3px solid #8B5E3C;
+            font-weight: 700;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(212, 197, 176, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-10">
+
+    <!-- 頂部固定導覽列 -->
+    <nav class="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col">
+                <!-- 標題區 -->
+                <div class="flex items-center h-14 md:h-16">
+                    <span class="text-lg md:text-xl font-bold text-[#3E4A3D]">北海道地方創生考察</span>
+                </div>
+                <!-- 水平滑動分頁列 -->
+                <div class="nav-scroll-container border-t border-gray-50">
+                    <button onclick="switchSection('day1')" id="btn-day1" class="nav-btn flex-shrink-0 px-4 py-3 text-sm font-medium transition-all">Day 1 小樽</button>
+                    <button onclick="switchSection('day2')" id="btn-day2" class="nav-btn flex-shrink-0 px-4 py-3 text-sm font-medium transition-all">Day 2 札幌</button>
+                    <button onclick="switchSection('day3')" id="btn-day3" class="nav-btn flex-shrink-0 px-4 py-3 text-sm font-medium transition-all">Day 3 東川</button>
+                    <button onclick="switchSection('day4')" id="btn-day4" class="nav-btn flex-shrink-0 px-4 py-3 text-sm font-medium transition-all">Day 4 美瑛</button>
+                    <button onclick="switchSection('day5')" id="btn-day5" class="nav-btn flex-shrink-0 px-4 py-3 text-sm font-medium transition-all">Day 5 十勝夕張</button>
+                    <button onclick="switchSection('summary')" id="btn-summary" class="nav-btn flex-shrink-0 px-4 py-3 text-sm font-medium transition-all">政策啟示</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 標題橫幅 -->
+    <header class="bg-[#3E4A3D] text-white py-8 md:py-12 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 id="header-title" class="text-2xl md:text-4xl font-bold mb-3">數位考察日誌</h1>
+            <p class="text-sm md:text-base opacity-80">國發會與經濟部聯合考察團 · 跨領域實地研析</p>
+        </div>
+    </header>
+
+    <!-- 主要內容區 -->
+    <main class="max-w-6xl mx-auto px-4 mt-6">
+        <div id="content-area" class="fade-in">
+            <!-- 內容將由 JavaScript 動態填入 -->
+        </div>
+    </main>
+
+    <script>
+        const appData = {
+            day1: {
+                title: "Day 1：小樽市 —— 工業遺產的活化轉譯",
+                intro: "首日重點：觀察「炭鐵港」日本遺產如何將廢棄鐵路與倉庫轉型。小樽示範了歷史資產在面對城市現代開發時，如何透過社區參與達成動態保存。",
+                points: [
+                    { name: "小樽市綜合博物館", desc: "保存日本最古老機關車庫。重點在於志工與市民如何共同維護文化資產的「生命力」。", key: "文化財的活態保存" },
+                    { name: "舊手宮線步道", desc: "廢棄軌道轉化為城市綠廊。觀察工業遺跡如何退位給大眾，成為步行城市的核心。", key: "閒置空間公共化" },
+                    { name: "小樽運河倉庫群", desc: "曾經的填平爭議催生了今日的景觀保全。現為商業模式與文史保護折衷的經典。", key: "地景品牌的商業永續" }
+                ],
+                chartType: 'none'
+            },
+            day2: {
+                title: "Day 2：札幌市 —— 長效設計與廣域治理",
+                intro: "次日聚焦於「再編輯」的能力。透過 D&DEPARTMENT 提出的長效設計思維，重新定義地方產品的價值，並探討跨區域行政協作。 ",
+                points: [
+                    { name: "鈴木直道知事交流", desc: "對談北海道行政改革與人口對策，探討區域樞紐城市如何帶動周邊發展。", key: "廣域行政協調機制" },
+                    { name: "北海道大學 MCIP", desc: "大學研發能量如何落地。解決在地高齡化與農工短缺的實質轉譯點。", key: "產學協作解決社會問題" },
+                    { name: "長效設計 (D&D)", desc: "不開發新品，而是發掘舊品。學習如何選擇具備「可維修性」與「在地根植性」的設計。", key: "地方品牌的美學編輯" }
+                ],
+                chartType: 'bar',
+                chartLabel: '長效設計核心指標分析',
+                chartData: {
+                    labels: ['扎根性', '健康性', '夥伴關係', '歷史延續'],
+                    datasets: [{
+                        label: '得分',
+                        data: [90, 85, 80, 95],
+                        backgroundColor: '#8B5E3C'
+                    }]
+                }
+            },
+            day3: {
+                title: "Day 3：東川町 —— 適疎美學與關係人口",
+                intro: "全日本最知名的創生典範。不追求過度發展，而是強調「恰到好處的空間」。首創股東制度，將「捐款者」轉化為「支持者」。",
+                points: [
+                    { name: "東川町株主制度", desc: "將故鄉稅轉化為「投資投資」，賦予捐款者特別町民證。建立深度情感連結。", key: "關係人口轉化模型" },
+                    { name: "公立日本語學校", desc: "引進外國學生，讓偏鄉具備國際流動性。消除封閉感並創造多元文化環境。", key: "教育引導人口回流" },
+                    { name: "北之住居設計社", desc: "廢校再生的最高典範。將美學、職人精神與在地素材完美整合的家具工房。", key: "廢棄空間的價值再造" }
+                ],
+                chartType: 'radar',
+                chartLabel: '東川模式：關係人口權益權重',
+                chartData: {
+                    labels: ['身份認同', '消費回饋', '特產獲取', '住宿優惠', '決策參與'],
+                    datasets: [{
+                        label: '權益比重',
+                        data: [100, 80, 70, 90, 60],
+                        borderColor: '#8B5E3C',
+                        backgroundColor: 'rgba(139, 94, 60, 0.2)'
+                    }]
+                }
+            },
+            day4: {
+                title: "Day 4：美瑛町 —— 農觀共生與景觀保衛",
+                intro: "美瑛的挑戰在於「美麗景觀帶來的破壞」。透過 DMO 組織進行防禦性治理，在保護農權與歡迎遊客之間尋求平衡點。",
+                points: [
+                    { name: "美瑛 DMO 治理", desc: "建立嚴格的拍照規範，甚至在必要時砍樹。強調地景是農民的私有資產。", key: "觀光客管理與權益平衡" },
+                    { name: "美瑛選果", desc: "將農產品精品化，透過高品質空間與米其林餐飲，讓觀光收益流回農業。", key: "農產品高溢價策略" },
+                    { name: "白金青池與拓真館", desc: "藝術如何定義地景。攝影展覽館帶動了全球對於美瑛視覺印象的建構。", key: "藝術介入地景行銷" }
+                ],
+                chartType: 'none'
+            },
+            day5: {
+                title: "Day 5：十勝與夕張 —— 極端治理模式對照",
+                intro: "最後一日對比兩種生存策略：十勝的廣域智慧農業（攻勢）vs 夕張的財政破產後品牌保全（防禦）。",
+                points: [
+                    { name: "十勝智慧農業", desc: "大尺度的農業科技應用。解決勞動力不足，並透過廣域振興局整合19個市町村。", key: "跨行政區域資源整合" },
+                    { name: "夕張哈密瓜 GI", desc: "即便城市規模萎縮，仍透過地理標示 (GI) 與 IP 授權維持哈密瓜品牌產值。", key: "萎縮城市品牌經營" }
+                ],
+                chartType: 'bar',
+                chartLabel: '治理模式對比 (十勝 vs 夕張)',
+                chartData: {
+                    labels: ['資源規模', '品牌力', '科技導入', '成本效益'],
+                    datasets: [
+                        { label: '十勝 (廣域)', data: [95, 75, 90, 70], backgroundColor: '#7C9070' },
+                        { label: '夕張 (利基)', data: [30, 95, 40, 90], backgroundColor: '#F4A261' }
+                    ]
+                }
+            },
+            summary: {
+                title: "總結：台灣創生 2.0 的啟示",
+                intro: "北海道經驗告訴我們：地方創生不只是「拉人進來」，更重要的是「建立連結」與「保護資產」。",
+                points: [
+                    { name: "從定居到「關係」", desc: "推動數位關係人口證，不以設籍為唯一目標，而是建立長期的支持網絡。", key: "關係人口經營" },
+                    { name: "資產內部化", desc: "建立機制讓觀光客產生的收益能實質回流到維護環境的基層組織。", key: "受益者付費與回饋" },
+                    { name: "長效設計思維", desc: "停止一次性補助。轉而資助具備長期編輯與經營能力的「在地策展人」。", key: "永續設計導入" }
+                ],
+                chartType: 'none'
+            }
+        };
+
+        let currentChart = null;
+
+        function switchSection(dayId) {
+            const data = appData[dayId];
+            const contentArea = document.getElementById('content-area');
+            
+            // 更新導覽列樣式
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('nav-active'));
+            document.getElementById(`btn-${dayId}`).classList.add('nav-active');
+
+            // 手機端點擊後，自動滾動導覽列讓選中項居中
+            const btn = document.getElementById(`btn-${dayId}`);
+            btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+
+            // 生成據點卡片 HTML
+            let pointsHtml = data.points.map(p => `
+                <div class="p-5 rounded-2xl shadow-sm glass-card fade-in">
+                    <h3 class="text-lg font-bold mb-2 text-[#3E4A3D] flex items-center">
+                        <span class="w-1.5 h-6 bg-[#8B5E3C] mr-3 rounded-full"></span>
+                        ${p.name}
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-4 leading-relaxed">${p.desc}</p>
+                    <div class="bg-white/50 p-3 rounded-lg border border-[#D4C5B0]/50">
+                        <p class="text-xs font-bold text-[#8B5E3C] mb-1">考察重點：</p>
+                        <p class="text-sm font-medium text-[#3E4A3D]">${p.key}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // 圖表區塊
+            let chartSection = '';
+            if (data.chartType !== 'none') {
+                chartSection = `
+                    <div class="mt-8 p-6 bg-white rounded-2xl shadow-sm border border-gray-100 fade-in">
+                        <h4 class="text-center font-bold text-[#3E4A3D] mb-6">${data.chartLabel}</h4>
+                        <div class="chart-container">
+                            <canvas id="mainChart"></canvas>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 更新內容
+            contentArea.innerHTML = `
+                <div class="mb-8 max-w-2xl">
+                    <h2 class="text-2xl font-bold mb-3 text-[#8B5E3C]">${data.title}</h2>
+                    <p class="text-sm md:text-base text-gray-600 leading-relaxed">${data.intro}</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
+                    ${pointsHtml}
+                </div>
+
+                ${chartSection}
+            `;
+
+            // 初始化或更新圖表
+            if (data.chartType !== 'none') {
+                if (currentChart) currentChart.destroy();
+                const ctx = document.getElementById('mainChart').getContext('2d');
+                currentChart = new Chart(ctx, {
+                    type: data.chartType,
+                    data: data.chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { 
+                                display: data.chartType !== 'radar',
+                                position: 'bottom',
+                                labels: { boxWidth: 12, font: { size: 11 } }
+                            }
+                        },
+                        scales: data.chartType === 'bar' ? {
+                            y: { beginAtZero: true, max: 100, grid: { display: false } },
+                            x: { grid: { display: false } }
+                        } : {
+                            r: { beginAtZero: true, max: 100, ticks: { display: false } }
+                        }
+                    }
+                });
+            }
+
+            // 頁面自動捲動到內容頂部
+            if (window.innerWidth < 768) {
+                window.scrollTo({ top: 160, behavior: 'smooth' });
+            }
+        }
+
+        // 初始載入 Day 1
+        window.onload = () => switchSection('day1');
+    </script>
+</body>
+</html>
