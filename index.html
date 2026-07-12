@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>北海道地方創生深度考察互動指南</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #F9F7F2;
+            color: #3E362E;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 450px;
+        }
+
+        .nav-active {
+            border-bottom: 4px solid #8B5E3C;
+            color: #8B5E3C;
+            font-weight: 700;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <nav class="sticky top-0 z-50 bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="text-xl font-bold text-[#3E4A3D]">北海道考察數位誌</span>
+                </div>
+                <div class="hidden md:flex space-x-4 overflow-x-auto">
+                    <button onclick="switchSection('day1')" id="btn-day1" class="nav-btn px-3 py-2 text-sm font-medium hover:text-[#8B5E3C] transition">Day 1 小樽</button>
+                    <button onclick="switchSection('day2')" id="btn-day2" class="nav-btn px-3 py-2 text-sm font-medium hover:text-[#8B5E3C] transition">Day 2 札幌</button>
+                    <button onclick="switchSection('day3')" id="btn-day3" class="nav-btn px-3 py-2 text-sm font-medium hover:text-[#8B5E3C] transition">Day 3 東川</button>
+                    <button onclick="switchSection('day4')" id="btn-day4" class="nav-btn px-3 py-2 text-sm font-medium hover:text-[#8B5E3C] transition">Day 4 美瑛</button>
+                    <button onclick="switchSection('day5')" id="btn-day5" class="nav-btn px-3 py-2 text-sm font-medium hover:text-[#8B5E3C] transition">Day 5 帶廣/夕張</button>
+                    <button onclick="switchSection('summary')" id="btn-summary" class="nav-btn px-3 py-2 text-sm font-medium hover:text-[#8B5E3C] transition">政策啟示</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="bg-[#3E4A3D] text-white py-12 px-4 mb-8">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-3xl md:text-5xl font-bold mb-4">日本北海道地方創生考察</h1>
+            <p class="text-lg opacity-90">國發會與經濟部聯合考察團 · 2026年7月20日 - 7月25日</p>
+            <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white/10 rounded-lg p-3 text-center">
+                    <div class="text-2xl font-bold">44</div>
+                    <div class="text-xs">總成員人數</div>
+                </div>
+                <div class="bg-white/10 rounded-lg p-3 text-center">
+                    <div class="text-2xl font-bold">6</div>
+                    <div class="text-xs">參訪主要城市</div>
+                </div>
+                <div class="bg-white/10 rounded-lg p-3 text-center">
+                    <div class="text-2xl font-bold">4</div>
+                    <div class="text-xs">核心探討任務</div>
+                </div>
+                <div class="bg-white/10 rounded-lg p-3 text-center">
+                    <div class="text-2xl font-bold">2.0</div>
+                    <div class="text-xs">對接地方創生階段</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 pb-20">
+        <div id="content-area" class="fade-in">
+            <!-- Dynamic content will be injected here -->
+        </div>
+    </main>
+
+    <script>
+        const appData = {
+            day1: {
+                title: "Day 1：小樽市 —— 工業遺產的文史轉譯",
+                intro: "首日考察聚焦於「空間再生」。小樽市作為曾經的物流樞紐，如何將不再具備運輸功能的鐵路與倉庫，轉化為帶動城市觀光與居民活動的公共財？本區段探討的是文史資產如何與現代開發達成折衷。",
+                points: [
+                    {
+                        name: "小樽市綜合博物館 (本館)",
+                        desc: "日本遺產「炭鐵港」的核心，保存著日本現存最古老的機關車庫三號。不僅是靜態展示，更有志工維修團隊讓老蒸汽火車能動態運行。",
+                        key: "探討國家重要文化財如何在專業維修與社區參與下達成活態保存。"
+                    },
+                    {
+                        name: "舊手宮線步道",
+                        desc: "全長約1.6公里的廢棄鐵軌，轉化為步行景觀空間。保留軌道與平交道，連結了過去的物流功能與現在的休閒路徑。",
+                        key: "觀察工業空間如何退位給公眾，成為城市品牌的步行識別系統。"
+                    },
+                    {
+                        name: "小樽運河與石造倉庫群",
+                        desc: "曾經面臨填平危機，最終演變為全球知名的景觀保存案例。現已進駐精釀啤酒屋與文化空間。",
+                        key: "剖析地方保存運動如何與法規衝突後達成折衷，並發展商業導向的永續模式。"
+                    }
+                ],
+                chartType: 'none'
+            },
+            day2: {
+                title: "Day 2：札幌市 —— 廣域行政與長效設計",
+                intro: "次日行程進入行政中心。札幌作為樞紐，示範了「廣域行政」的協調機制，並引入「長效設計」思維來評估地方產業的永續性。這裡強調的不只是創造，更是「再編輯」的能力。",
+                points: [
+                    {
+                        name: "北海道廳 (知事交流)",
+                        desc: "與鈴木直道知事對談，探討在市町村極端分散的情況下，道廳如何進行行政協調整合，推動跨區域的韌性政策。",
+                        key: "學習跨區域行政協作機制，避免地方發展陷入「行政孤島」。"
+                    },
+                    {
+                        name: "北海道大學 MCIP",
+                        desc: "產學地區協作機構，專注於將大學的研發能量轉化為解決高齡化與農業缺工的社會創新企業。",
+                        key: "探討學術機構如何成為地域課題的轉譯器，引導科技研發服務在地。"
+                    },
+                    {
+                        name: "D&DEPARTMENT SAPPORO",
+                        desc: "設計活動家長岡賢明創立，倡導「Long-life Design」。發掘被遺忘的在地經典產品，並透過設計賦予新價值。",
+                        key: "剖析「設計介入地方產業」的標準，了解如何挑選能修理且具備長期價值的物件。"
+                    }
+                ],
+                chartType: 'bar',
+                chartLabel: '長效設計核心維度變遷 (2000 vs 2019)',
+                chartData: {
+                    labels: ['扎根性 (Rooted)', '健康性 (Healthy)', '夥伴關係 (Partners)', '歷史延續 (History)'],
+                    datasets: [
+                        { label: '傳統核心評估', data: [60, 50, 40, 70], backgroundColor: '#D4C5B0' },
+                        { label: '現代創生定義', data: [95, 85, 90, 80], backgroundColor: '#8B5E3C' }
+                    ]
+                }
+            },
+            day3: {
+                title: "Day 3：東川町 —— 「適疎」美學與關係人口",
+                intro: "東川町是全日本唯一沒有自來水的自治體。他們不追求大規模發展，而是提出「適疎」理念（恰到好處的空間）。透過領先全國的「股東制度」，他們將短暫遊客成功轉化為長期支持者。",
+                points: [
+                    {
+                        name: "東川町役場 (股東制度)",
+                        desc: "全國首創「ひがしかわ株主制度」，將故鄉稅收視為對城鎮的投資，賦予捐款者「特別町民」身份與權益卡。",
+                        key: "研究如何建立實質的身份認同，並利用消費點數機制帶動在地經濟循環。"
+                    },
+                    {
+                        name: "東川町立日本語學校",
+                        desc: "公立學校吸收外國留學生，透過國際人口的流動，自然地消解偏鄉封閉性，增加文化多樣性。",
+                        key: "觀察國際教育如何成為關係人口經營的敲門磚。"
+                    },
+                    {
+                        name: "北之住居設計社",
+                        desc: "將廢校小學改建為木製家具工房。堅持「職人終始負責制」與道產素材，體現回歸土地的慢生產模式。",
+                        key: "學習廢舊校舍再生的商業機能置換，以及如何打造與自然共生的家具品牌。"
+                    }
+                ],
+                chartType: 'radar',
+                chartLabel: '特別町民 (關係人口) 權益組成',
+                chartData: {
+                    labels: ['身份認同感', '消費點數回饋', '特產回饋', '住宿優惠', '決策參與感'],
+                    datasets: [{
+                        label: '東川模式權益配置',
+                        data: [95, 80, 70, 85, 60],
+                        borderColor: '#8B5E3C',
+                        backgroundColor: 'rgba(139, 94, 60, 0.2)'
+                    }]
+                }
+            },
+            day4: {
+                title: "Day 4：美瑛町 —— 農觀共生與景觀保衛",
+                intro: "美瑛的「拼布之路」是農民辛勤輪作的結果。然而，百萬遊客帶來的踩踏與病菌對農業造成巨大威脅。這裡展示的是「DMO」如何進行防禦性治理，在觀光與農權之間取得平衡。",
+                points: [
+                    {
+                        name: "美瑛町觀光協會 (DMO)",
+                        desc: "發布多國語言拍攝禮儀手冊，宣示「農田是私有財產」。甚至在必要時砍伐象徵性樹木，以防止遊客非法入侵。",
+                        key: "探討地方如何制定硬性規範保護「景觀公共財」，避免過度觀光。"
+                    },
+                    {
+                        name: "美瑛選果",
+                        desc: "整合了農產品直賣與米其林星級餐廳。透過高度設計感的包裝，將低價基礎農產轉化為高溢價精品。",
+                        key: "了解如何將「景觀流量」導流為「農產產值」，實質回饋給承擔景觀成本的農民。"
+                    },
+                    {
+                        name: "拓真館與白金青池",
+                        desc: "前田真三鏡頭下的地景呈現。青池則是因防災工程意外形成的景點，展示了自然景觀與工程的偶發結合。",
+                        key: "觀察藝術攝影如何定義地景價值，進而帶動全球朝聖。 "
+                    }
+                ],
+                chartType: 'none'
+            },
+            day5: {
+                title: "Day 5：帶廣與夕張 —— 智慧農業與品牌防衛",
+                intro: "考察終點探討極端案例。十勝是廣域、大規模的智慧農業示範區；夕張則是財政破產後，如何透過「限定經營」與「IP 經營」在廢墟中求生的經典案例。",
+                points: [
+                    {
+                        name: "十勝綜合振興局",
+                        desc: "整合轄下19個市町村資源，推動智慧農業接班人體系，解決少子化帶來的農業勞動力危機。",
+                        key: "研究行政機關如何打破行政邊界，建立共同行銷通路。 "
+                    },
+                    {
+                        name: "夕張哈密瓜圓頂中心",
+                        desc: "採取「期間限定」營運策略，將人力聚焦於產期。利用地理標示 (GI) 保護與「哈密瓜熊」IP 打造世界級品牌。",
+                        key: "剖析財政拮据城市如何透過極致的資源聚焦與品牌防禦達成生存策略。"
+                    }
+                ],
+                chartType: 'bar',
+                chartLabel: '治理模式對照：廣域規模 vs 利基防衛',
+                chartData: {
+                    labels: ['資源整合力', '品牌集中度', '成本控制', '科技導向'],
+                    datasets: [
+                        { label: '十勝模式 (廣域)', data: [95, 70, 60, 90], backgroundColor: '#7C9070' },
+                        { label: '夕張模式 (利基)', data: [40, 95, 90, 50], backgroundColor: '#F4A261' }
+                    ]
+                }
+            },
+            summary: {
+                title: "總結：對台灣地方創生 2.0 的啟示",
+                intro: "結合五日考察，我們提煉出四項核心策略。這不只是日本的經驗，更是台灣在面臨高齡化與地域衰退時，可以立即對接的操作邏輯。",
+                points: [
+                    {
+                        name: "從定居轉向「關係經營」",
+                        desc: "不應死守戶籍遷移指標。應引進「東川模式」的株主卡，讓城市居民成為地方的支持股東。",
+                        key: "創造實質消費與多次造訪的外部網絡。"
+                    },
+                    {
+                        name: "景觀利益的「外部性返還」",
+                        desc: "地景是農民維護的成本，觀光客卻享受利益。應建立如「美瑛選果」的機制，讓觀光收益回流農地。",
+                        key: "確保公共財不被免費榨取。"
+                    },
+                    {
+                        name: "導入「長效設計」美學",
+                        desc: "避免一次性節慶或同質化特產。引進設計編輯力，讓地方物件具備可修理、長久使用的價值。",
+                        key: "建立人與土地物件的長期情感連結。"
+                    },
+                    {
+                        name: "實施「廣域行政協同」",
+                        desc: "打破單一鄉鎮申請補助的孤島模式，由縣市主導進行大尺度協同，整合冷鏈與智慧基礎設施。",
+                        key: "建構抵禦全球化衝擊的地域韌性。"
+                    }
+                ],
+                chartType: 'none'
+            }
+        };
+
+        function switchSection(dayId) {
+            const data = appData[dayId];
+            const contentArea = document.getElementById('content-area');
+            
+            // Update Nav Buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('nav-active'));
+            document.getElementById(`btn-${dayId}`).classList.add('nav-active');
+
+            // Build Content HTML
+            let pointsHtml = data.points.map(p => `
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-[#8B5E3C] glass-card">
+                    <h3 class="text-xl font-bold mb-2 text-[#3E4A3D]">${p.name}</h3>
+                    <p class="text-sm text-gray-600 mb-4 leading-relaxed">${p.desc}</p>
+                    <div class="bg-[#F9F7F2] p-3 rounded border border-[#D4C5B0]">
+                        <span class="text-xs font-bold text-[#8B5E3C] uppercase tracking-wider">考察重點：</span>
+                        <p class="text-sm italic">${p.key}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            let chartSection = '';
+            if (data.chartType !== 'none') {
+                chartSection = `
+                    <div class="mt-12 p-8 bg-white rounded-2xl shadow-md border border-gray-100">
+                        <h4 class="text-center font-bold text-lg mb-6">${data.chartLabel}</h4>
+                        <div class="chart-container">
+                            <canvas id="mainChart"></canvas>
+                        </div>
+                        <p class="mt-6 text-xs text-center text-gray-500 italic">* 數據為概念性量化模型，旨在展示政策配置比重</p>
+                    </div>
+                `;
+            }
+
+            contentArea.innerHTML = `
+                <div class="mb-10 text-center max-w-3xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-4 text-[#8B5E3C]">${data.title}</h2>
+                    <p class="text-gray-600 leading-relaxed">${data.intro}</p>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-6 mb-12">
+                    ${pointsHtml}
+                </div>
+
+                ${chartSection}
+            `;
+
+            // Initialize Chart
+            if (data.chartType !== 'none') {
+                const ctx = document.getElementById('mainChart').getContext('2d');
+                new Chart(ctx, {
+                    type: data.chartType,
+                    data: data.chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        },
+                        scales: data.chartType === 'bar' ? {
+                            y: { beginAtZero: true, max: 100 }
+                        } : {}
+                    }
+                });
+            }
+
+            // Scroll to top of content
+            window.scrollTo({ top: 400, behavior: 'smooth' });
+        }
+
+        // Initialize with Day 1
+        window.onload = () => switchSection('day1');
+    </script>
+</body>
+</html>
